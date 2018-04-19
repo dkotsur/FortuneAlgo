@@ -7,6 +7,10 @@
 //
 
 #include <iostream>
+#include <iomanip>
+#include <vector>
+#include <queue>
+
 
 
 template<class T>
@@ -14,10 +18,10 @@ class AVLNode {
 public:
     
     T data;
-    size_t height;
+    int height;
     AVLNode *left, *right, *parent;
     
-    AVLNode(T _data, AVLNode* _left = nullptr, AVLNode* _right = nullptr, AVLNode* _parent = nullptr, size_t _height = 0) :
+    AVLNode(T _data, AVLNode<T>* _left = nullptr, AVLNode<T>* _right = nullptr, AVLNode<T>* _parent = nullptr, int _height = 1) :
         data(_data), left(_left), right(_right), parent(_parent), height(_height) {}
 };
 
@@ -44,7 +48,7 @@ bool is_root(AVLNode<T> *node) {
  Get height of a node
  */
 template<class T>
-size_t get_height(AVLNode<T> *node) {
+int get_height(AVLNode<T> *node) {
     if (node == nullptr) return 0;
     return node->height;
 }
@@ -101,6 +105,7 @@ void rotate_left(AVLNode<T>* &node) {
     node = rnode;
 }
 
+
 /**
  Performs rotation of a tree around `node` such that it goes to the right subtree
  */
@@ -141,18 +146,102 @@ void rotate_right(AVLNode<T>* &node) {
     node = lnode;
 }
 
+
 /**
  Insert new node into AVL tree
  */
 template<class T>
-void insert(AVLNode<T>* root, AVLNode<T> *new_node) {
+void insert(AVLNode<T>* &root, AVLNode<T> *new_node) {
     
+    if (root == nullptr) {
+        root = new_node;
+        return;
+    }
+    
+    // Find a place where insert a new node
+    AVLNode<T> *node = root, *parent_node = nullptr;
+    while (node != nullptr) {
+        parent_node = node;
+        if (node->data > new_node->data) { // go to left subtree
+            node = node->left;
+        } else {
+            node = node->right;
+        }
+    }
+    
+    // Insert a node
+    new_node->parent = parent_node;
+    if (parent_node->data > new_node->data) {
+        parent_node->left = new_node;
+    } else {
+        parent_node->right = new_node;
+    }
+    
+    node = nullptr;
+    while (parent_node != nullptr) {
+        update_height(parent_node);
+        int balance = get_height(parent_node->left) - get_height(parent_node->right);
+        if (balance > 1) { // left subtree is higher than right subtree by more than 1
+            if (parent_node->left != nullptr && new_node->data > parent_node->left->data) {
+                rotate_left(parent_node->left);
+            }
+            rotate_right(parent_node);
+        } else if (balance < -1) { // right subtree is lower than left subtree by more than 1
+            if (parent_node->right != nullptr && new_node->data < parent_node->right->data) {
+                rotate_right(parent_node->right);
+            }
+            rotate_left(parent_node);
+        }
+        node = parent_node;
+        parent_node = parent_node->parent;
+    }
+    
+    root = node;
+}
+
+
+/**
+ Print tree
+ */
+template<class T>
+void print_tree(AVLNode<T> *root, int width = 3) {
+
+    std::vector<std::vector<AVLNode<T>*>> layers(root->height);
+    
+    layers[0].push_back(root);
+    int size = 2;
+    for (int i = 1; i < root->height; ++i) {
+        layers[i].resize(size);
+        for (int j = 0; j < layers[i-1].size(); ++j) {
+            layers[i][2*j] = layers[i-1][j]->left;
+            layers[i][2*j+1] = layers[i-1][j]->right;
+        }
+        size *= 2;
+    }
+    
+    size /= 2;
+    for (int i = 0; i < root->height; ++i) {
+        for (int j = 0; j < layers[i].size(); ++j) {
+            if (layers[i][j] != nullptr)
+                std::cout << std::setw(width * size) << layers[i][j]->data;
+            else
+                std::cout << std::setw(width * size) << "  ";
+        }
+        std::cout << std::endl;
+        size /= 2;
+    }
 }
 
 
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
-    return 0;
+    
+    AVLNode<int> *root = nullptr;//new AVLNode<int>(5);
+    
+    for (int i = 1; i < 20; ++i) {
+        insert(root, new AVLNode<int>(i));
+       // insert(root, new AVLNode<int>(2));
+    }
+
+    print_tree(root);
 }
