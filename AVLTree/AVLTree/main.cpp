@@ -67,13 +67,38 @@ void update_height(AVLNode<T> *node) {
 template<class T>
 void rotate_left(AVLNode<T>* &node) {
     
-    if (node == nullptr)
+    if (node == nullptr || node->right == nullptr)
         return;
     
+    // get right node, which becomes a new root node
+    AVLNode<T> *rnode = node->right;
     
+    // establish connections with a root node if threre is one
+    if (!is_root(node)) {
+        if (node->parent->left == node) {
+            node->parent->left = rnode;
+        } else {
+            node->parent->right = rnode;
+        }
+    }
+    rnode->parent = node->parent;
     
+    // connect right subtree of the left child as a left subtree of `node`
+    node->right = rnode->left;
+    if (rnode->left != nullptr) {
+        rnode->left->parent = node;
+    }
     
+    // connect `node` as a right child of it's child
+    rnode->left = node;
+    node->parent = rnode;
     
+    // update height attribute
+    update_height(node);
+    update_height(rnode);
+    update_height(rnode->parent);
+    
+    node = rnode;
 }
 
 /**
