@@ -6,243 +6,300 @@
 //  Copyright © 2018 Dmytro Kotsur. All rights reserved.
 //
 
+#include <ctime>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
 #include <algorithm>
 
 #include "Point2D.h"
+#include "VoronoiDiagram.hpp"
 #include "Beachline.hpp"
-#include "Parabola.hpp"
-#include "Circle.hpp"
+
+
+#include "matplotlibcpp.h"
 
 namespace bl = beachline;
+namespace plt = matplotlibcpp;
 
 
-struct Event {
-    
-    enum { SITE = 0, CIRCLE = 1, SKIP = 2, };
-    
-    
-    int type;
-    Point2D point;
-    
-    /*
-     Site event attributes:
-     */
-    int index;
-    
-    /*
-     Circle event attributes:
-    */
-    Point2D center;
-    bl::BLNode *arc;
-    
-    
-    Event(int _index = -1, int _type = Event::SKIP, const Point2D &_point = Point2D(0.0, 0.0)) :
-        index(_index), type(_type), point(_point), arc(nullptr) {}
-    
-};
-
-
-
-struct Point2DComparator {
-    bool operator()(const Point2D &p1, const Point2D &p2) {
-        return (fabs(p1.y - p2.y) < POINT_EPSILON && p1.x > p2.x) || (fabs(p1.y - p2.y) > POINT_EPSILON && p1.y > p2.y);
+/**
+ Converts vector of Point2D into vector of double.
+ If coord_id == 0, function returns x-coordinate
+ If coord_id == 1, function returns y-coordinate
+ */
+std::vector<double> get_coordinate(const std::vector<Point2D> &points, int coord_id) {
+    std::vector<double> c(points.size(), 0.0);
+    if (coord_id == 0) {
+        for (size_t i = 0; i < points.size(); ++i) {
+            c[i] = points[i].x;
+        }
+    } else {
+        for (size_t i = 0; i < points.size(); ++i) {
+            c[i] = points[i].y;
+        }
     }
-};
+    return c;
+}
 
 
-struct EventComparator {
-    Point2DComparator point_cmp;
-    bool operator()(const Event &e1, const Event &e2) {
-        return point_cmp(e1.point, e2.point);
+/**
+ Converts vector of Vertex pointers into vector of double.
+ If coord_id == 0, function returns x-coordinate
+ If coord_id == 1, function returns y-coordinate
+ */
+std::vector<double> get_coordinate(const std::vector<bl::VertexPtr> &points, int coord_id) {
+    std::vector<double> c(points.size(), 0.0);
+    if (coord_id == 0) {
+        for (size_t i = 0; i < points.size(); ++i) {
+            c[i] = points[i]->point.x;
+        }
+    } else {
+        for (size_t i = 0; i < points.size(); ++i) {
+            c[i] = points[i]->point.y;
+        }
     }
-};
+    return c;
+}
 
 
-
-struct TreeNode {
-    enum { BRANCH = 0, ARC = 1 };
-    
-    int node_type;
-    virtual double value() = 0;
-};
-
-struct BranchNode : TreeNode {
-    double value() {
-        return 0.0;
+void plot_circle(const Point2D &c, double r) {
+    std::vector<double> x, y;
+    for (double t = 0.0; t < 2 * M_PI + 0.05; t += 0.05) {
+        x.push_back(sin(t) * r + c.x);
+        y.push_back(cos(t) * r + c.y);
     }
-};
+    plt::plot(x, y, "m-");
+}
 
-struct ArcNode : TreeNode {
-    double value() {
-        return 0.0;
+
+std::vector<Point2D> readPoints(const std::string &fileName, int step=1) {
+    
+    std::vector<Point2D> points;
+    std::ifstream in(fileName);
+    
+    double x, y;
+    int points_n = 0, i =0;
+    
+    if (in) {
+        in >> points_n;
+        for (int p_i = 0; p_i < points_n; ++p_i) {
+            in >> x >> y;
+            if (p_i == i) {
+                points.push_back(Point2D(x, y));
+                i += step;
+            }
+        }
     }
-};
+    return points;
+}
 
 
-struct HalfEdge {
-    
-    size_t index; // Index of a cell
-    
-    Point2D *vertex;
-    HalfEdge *twin;
-    
-    HalfEdge *next;
-    HalfEdge *prev;
-};
+double random_number() {
+    return double(rand()) / double(RAND_MAX);
+}
 
 
+std::vector<Point2D> randomPoint(int number) {
+    
+    srand(static_cast<unsigned int>(100));//time(0)));
+    std::vector<Point2D> points;
+    for (int i = 0; i < number; ++i) {
+        double x = random_number(), y = random_number();
+        points.push_back(Point2D(x, y));
+    }
+    std::sort(points.begin(), points.end(), [](const Point2D &p1, const Point2D &p2) {
+        return (fabs(p1.y - p2.y) < POINT_EPSILON && p1.x < p2.x) || (fabs(p1.y - p2.y) >= POINT_EPSILON && p1.y < p1.y);
+    });
+    for (int i = 1; i < number; ++i) {
+        if ((points[i-1] - points[i]).norm() < POINT_EPSILON) {
+            points[i-1].x = random_number();
+        }
+    }
+    for (int i = number-1; i >= 0; --i) {
+        int j = rand() % (i+1);
+        std::swap(points[i], points[j]);
+    }
+    return points;
+}
 
 
-bool checkCircleEvent(bl::BLNode *n1, bl::BLNode *n2, bl::BLNode *n3,
-                      std::vector<Point2D> &points, double sweepline,
-                      Event &e) {
+void initEdgePointsVis(bl::HalfEdgePtr h, std::vector<double> &x, std::vector<double> &y,
+                       const std::vector<Point2D> &points) {
     
-    if (n1 == nullptr || n2 == nullptr || n3 == nullptr)
-        return false;
-    
-    Point2D p1 = points[n1->get_id()];
-    Point2D p2 = points[n2->get_id()];
-    Point2D p3 = points[n3->get_id()];
-    Point2D center, bottom;
-    
-    if (!findCircleCenter(p1, p2, p3, center))
-        return false;
-    
-    bottom = center + Point2D(0.0, (center - p1).norm());
-    
-    // check event
-    if (fabs(bottom.y - sweepline) < POINT_EPSILON || sweepline < bottom.y) {
-        e = Event(-1, Event::CIRCLE, bottom);
-        e.center = center;
-        e.arc = n2;
+    if (h->vertex != nullptr && h->twin->vertex != nullptr) {
         
-        return true;
+        x[0] = h->vertex->point.x;
+        x[1] = h->twin->vertex->point.x;
+        
+        y[0] = h->vertex->point.y;
+        y[1] = h->twin->vertex->point.y;
+        
+    } else if (h->vertex != nullptr) {
+        
+        x[0] = h->vertex->point.x;
+        y[0] = h->vertex->point.y;
+        
+        Point2D norm = (points[h->l_index] - points[h->r_index]).normalized().getRotated90CCW();
+        x[1] = x[0] + norm.x * 1000;
+        y[1] = y[0] + norm.y * 1000;
+        
+    } else if (h->twin->vertex != nullptr) {
+        
+        x[0] = h->twin->vertex->point.x;
+        y[0] = h->twin->vertex->point.y;
+        
+        Point2D norm = (points[h->twin->l_index] - points[h->twin->r_index]).normalized().getRotated90CCW();
+        x[1] = x[0] + norm.x * 1000;
+        y[1] = y[0] + norm.y * 1000;
+        
+    } else {
+        
+        Point2D p1 = points[h->l_index], p2 = points[h->r_index];
+        
+        Point2D norm = (p1 - p2).normalized().getRotated90CCW();
+        Point2D c = 0.5 * (p1 + p2);
+        
+        x[0] = c.x + norm.x * 1000;
+        x[1] = c.x - norm.x * 1000;
+        
+        y[0] = c.y + norm.y * 1000;
+        y[1] = c.y - norm.y * 1000;
     }
-    
-    return false;
 }
 
 
 
 int main(int argc, const char *argv[]) {
     
-    std::vector<Point2D> points = {
-        Point2D(2.0, 1.0),
-        Point2D(4.0, 3.0),
-        Point2D(7.0, 1.0)
-    };
+    std::vector<Point2D> points = randomPoint(23);// readPoints("/Users/dkotsur/Projects/KNU/VoronoiSkeleton/Data/points_1.txt", 1);
     
-    std::priority_queue<Event, std::vector<Event>, EventComparator> pq;
+//    std::vector<Point2D> points = {
+//        Point2D(0.0, 0.0),
+//        Point2D(0.25, 0.0),
+//        Point2D(0.5, 1.0),
+//        Point2D(0.75, 0.0),
+//        Point2D(1.0, 0.0)
+//    };
+
+//    std::vector<Point2D> points = {
+//        Point2D(5, 2),
+//        Point2D(3, 3),
+//        Point2D(7, 3),
+//        Point2D(3, 5)
+//    };
+
+//    std::vector<Point2D> points = {
+//        Point2D(46.9219,21.0012),
+//        Point2D(58.0412,25.9238),
+//        Point2D(40.1528,25.9658)
+//      //  Point2D(64.9267,27.0127)
+////        Point2D(30.5983,33.1335),
+////        Point2D(46.9215,41)
+//    };
+
+//    std::vector<Point2D> points = {
+//        Point2D(0.0, 0.0),
+//        Point2D(8.0, 0.0),
+//        Point2D(2.0, 0.0),
+//        Point2D(5.0, 0.0),
+//        Point2D(9.0, 0.0),
+//        Point2D(4.0, 4.0),
+//        Point2D(1.0, 4.0),
+//        Point2D(3.0, 5.0),
+//        Point2D(2.0, 3.0),
+//        Point2D(2.0, 7.0),
+//        Point2D(5.0, 2.0),
+//        Point2D(1.0, 1.0),
+//        Point2D(5.0, 5.0),
+//        Point2D(0.0, 3.0),
+//        Point2D(0.5, 1.0),
+//        Point2D(0.001, -0.5),
+//        Point2D(M_PI, M_PI),
+//        Point2D(2.0, 1.0),
+//        Point2D(-1.0, 2.0)
+//    };
     
-    for (size_t i = 0; i < points.size(); ++i) {
-        pq.push(Event(static_cast<int>(i), Event::SITE, points[i]));
+//    std::vector<Point2D> points = {
+//        Point2D(0.0, 0.0),
+//        Point2D(-2.0, 2.0),
+//        Point2D(2.0, 2.0),
+//        Point2D(0.0, 4.0001)
+//    };
+
+    std::cout << points.size() << std::endl;
+    
+    std::vector<bl::HalfEdgePtr> halfedges, faces;
+    std::vector<bl::VertexPtr> vertices;
+
+    for(size_t i = 0; i < points.size(); ++i) {
+        std::vector<double> _x, _y;
+        _x.push_back(points[i].x); _y.push_back(points[i].y);
+        plt::named_plot(std::to_string(i), _x, _y, ".");
+    }
+
+    // Construct Voronoi diagram
+    build_voronoi(points, halfedges, vertices, faces);
+    
+    for (size_t i = 0; i < halfedges.size(); ++i) {
+        bl::HalfEdgePtr h = halfedges[i];
+
+        std::vector<double> x(2, 0.0), y(2, 0.0);
+        initEdgePointsVis(h, x, y, points);
+
+        plt::plot(x, y, "lightgray");
     }
     
-    bl::BLNode *root = nullptr;
-    double sweepline = 0L;
-    
-    while (!pq.empty()) {
-        
-        // extract new event from the queue
-        Event e = pq.top(); pq.pop();
-
-        // set position of a sweepline
-        sweepline = e.point.y;
-        
-        if (e.type == Event::SITE) { // Handle site event
-            int point_i = e.index;
-            if (root == nullptr) {
-                root = new bl::BLNode(std::make_pair(point_i, point_i), &sweepline, &points);
-            } else {
-                bl::BLNode *arc = bl::find(root, e.point.x);
-                bl::BLNode *subtree = nullptr, *left_leaf = nullptr, *right_leaf = nullptr;
-                
-                if (arc->circle_event != nullptr) {
-                    Event* circle_e = static_cast<Event*>(arc->circle_event);
-                    circle_e->type = Event::SKIP; // ignore corresponding event
-                }
-                
-                // check number of intersection points
-                int isp_num = intersectionPointsNum(points[arc->get_id()], e.point, sweepline);
-                
-                // different subtrees depending on the number of intersection points
-                if (isp_num == 1) {
-                    subtree = bl::make_simple_subtree(point_i, arc->get_id(), &sweepline, &points);
-                    left_leaf = subtree->left;
-                    right_leaf = subtree->right;
-                } else if (isp_num == 2) {
-                    subtree = bl::make_subtree(point_i, arc->get_id(), &sweepline, &points);
-                    left_leaf = subtree->left;
-                    right_leaf = subtree->right->right;
-                } else {
-                    std::cout << "Duplicating point!!!" << std::endl;
-                    continue;
-                }
-                
-                if (arc->prev != nullptr)
-                    bl::connect(arc->prev, left_leaf);
-                
-                if (arc->next != nullptr)
-                    bl::connect(right_leaf, arc->next);
-                
-                // Replace old leaf with a subtree and rebalance it
-                root = bl::replace(arc, subtree);
-                
-                //
-                // Check circle events
-                //
-                Event circle_event;
-                if (checkCircleEvent(left_leaf->prev, left_leaf, left_leaf->next, points, sweepline, circle_event)) {
-                    pq.push(circle_event);
-                }
-                
-                if (checkCircleEvent(right_leaf->prev, right_leaf, right_leaf->next, points, sweepline, circle_event)) {
-                    pq.push(circle_event);
-                }
-            }
-            
-        } else if (e.type == Event::CIRCLE) { // Handle circle event
-
-            //
-            bl::BLNode *arc = e.arc, *prev_leaf = nullptr, *next_leaf = nullptr;
-            
-            // remove circle event corresponding to next leaf
-            if (arc->prev != nullptr && arc->prev->circle_event != nullptr) {
-                Event* circle_e = static_cast<Event*>(arc->prev->circle_event);
-                circle_e->type = Event::SKIP; // ignore corresponding event
-            }
-            
-            // remove circle event corresponding to prev leaf
-            if (arc->next != nullptr && arc->next->circle_event != nullptr) {
-                Event* circle_e = static_cast<Event*>(arc->next->circle_event);
-                circle_e->type = Event::SKIP; // ignore corresponding event
-            }
-            
-            // store pointers to the next and previous leaves
-            prev_leaf = arc->prev;
-            next_leaf = arc->right;
-            
-            // remove arc from the beachline
-            root = bl::remove(arc);
-            
-            // check new circle events
-            if (prev_leaf != nullptr && next_leaf != nullptr) {
-                Event circle_event;
-                if (checkCircleEvent(prev_leaf->prev, prev_leaf, next_leaf, points, sweepline, circle_event)) {
-                    pq.push(circle_event);
-                }
-                if (checkCircleEvent(prev_leaf, next_leaf, next_leaf->next, points, sweepline, circle_event)) {
-                    pq.push(circle_event);
-                }
-            }
-            
-        }
+    for (size_t i = 0; i < halfedges.size(); ++i) {
+        bl::HalfEdgePtr h = halfedges[i];
+        do {
+            assert(halfedges[i]->l_index == h->l_index);
+            //printf("   Halfedge: %d %d\n", h->l_index, h->r_index);
+            h = h->next;
+        } while (h != nullptr && h != halfedges[i]);
     }
     
+    /**
+     Iterate around the vertex CCW
+     */
+    bl::HalfEdgePtr he_end = halfedges[6], he = he_end;
+    if (he->vertex != nullptr) {
+        do {
+            std::vector<double> x(2, 0.0), y(2, 0.0);
+            initEdgePointsVis(he, x, y, points);
+            
+            plt::plot(x, y, "m-");
+            //printf("..Iter: %d %d\n", he->l_index, he->r_index);
+            
+            he = he->vertexNextCCW();
+        } while (he != he_end && he != nullptr);
+    }
+    printf("\n\n");
     
+    /**
+     Iterate around the point CCW
+     */
+    he_end = faces[1]; he = he_end;
+    if (he != nullptr) {
+        do {
+            std::vector<double> x(2, 0.0), y(2, 0.0);
+            initEdgePointsVis(he, x, y, points);
+            
+            plt::plot(x, y, "c--");
+            //printf("..Iter: %d %d\n", he->l_index, he->r_index);
+            
+            he = he->next;
+        } while (he != nullptr && he != he_end);
+        
+    }
+    
+    plt::axis("equal");
+    plt::xlim(-0.5, 1.5);
+    plt::ylim(-0.5, 1.5);
+    //plt::legend();
+    plt::show();
+
     return 0;
 }
 

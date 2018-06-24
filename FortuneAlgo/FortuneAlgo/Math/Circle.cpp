@@ -30,7 +30,7 @@ bool findCircleCenter(const Point2D &p1, const Point2D &p2, const Point2D &p3, P
     
     // calculate the center of a circle
     center.x = (b1 * u2.y - b2 * u1.y) / cross;
-    center.y = (u1.x * b1 - u2.x * b2) / cross;
+    center.y = (u1.x * b2 - u2.x * b1) / cross;
     
     return true;
 }

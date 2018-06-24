@@ -7,10 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE4D7EEF209F386000C701D1 /* VoronoiDiagram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE4D7EED209F386000C701D1 /* VoronoiDiagram.cpp */; };
+		BE4D7EF1209F41ED00C701D1 /* Beachline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE4D7EF0209F41ED00C701D1 /* Beachline.cpp */; };
+		BE4D7EF3209F6D6B00C701D1 /* DCEL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE4D7EF2209F6D6B00C701D1 /* DCEL.cpp */; };
 		BE87393D208A00B8000AE074 /* Parabola.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE87393B208A00B8000AE074 /* Parabola.cpp */; };
 		BE873940208A14F0000AE074 /* Circle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE87393E208A14EF000AE074 /* Circle.cpp */; };
 		BEB3F69220879C9B00470352 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BEB3F69120879C9B00470352 /* main.cpp */; };
 		BEB3F69B20879D1800470352 /* Point2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BEB3F69A20879D1700470352 /* Point2D.cpp */; };
+		BEBE74C02090BEDA007F0FAD /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEBE74BF2090BEDA007F0FAD /* Python.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,6 +30,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BE4D7EED209F386000C701D1 /* VoronoiDiagram.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = VoronoiDiagram.cpp; sourceTree = "<group>"; };
+		BE4D7EEE209F386000C701D1 /* VoronoiDiagram.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = VoronoiDiagram.hpp; sourceTree = "<group>"; };
+		BE4D7EF0209F41ED00C701D1 /* Beachline.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Beachline.cpp; sourceTree = "<group>"; };
+		BE4D7EF2209F6D6B00C701D1 /* DCEL.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DCEL.cpp; sourceTree = "<group>"; };
+		BE8326C02091E211007066CB /* DCEL.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = DCEL.hpp; sourceTree = "<group>"; };
 		BE8739392089E33B000AE074 /* Beachline.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Beachline.hpp; sourceTree = "<group>"; };
 		BE87393B208A00B8000AE074 /* Parabola.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Parabola.cpp; sourceTree = "<group>"; };
 		BE87393C208A00B8000AE074 /* Parabola.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Parabola.hpp; sourceTree = "<group>"; };
@@ -35,6 +44,8 @@
 		BEB3F69120879C9B00470352 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		BEB3F69920879D1700470352 /* Point2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Point2D.h; sourceTree = "<group>"; };
 		BEB3F69A20879D1700470352 /* Point2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Point2D.cpp; sourceTree = "<group>"; };
+		BEBE74BD2090BE8C007F0FAD /* matplotlibcpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matplotlibcpp.h; sourceTree = "<group>"; };
+		BEBE74BF2090BEDA007F0FAD /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = System/Library/Frameworks/Python.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,16 +53,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEBE74C02090BEDA007F0FAD /* Python.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BE4D7EEC209F384500C701D1 /* Voronoi */ = {
+			isa = PBXGroup;
+			children = (
+				BE4D7EED209F386000C701D1 /* VoronoiDiagram.cpp */,
+				BE4D7EEE209F386000C701D1 /* VoronoiDiagram.hpp */,
+			);
+			path = Voronoi;
+			sourceTree = "<group>";
+		};
 		BE8739382089E31F000AE074 /* Datastruct */ = {
 			isa = PBXGroup;
 			children = (
 				BE8739392089E33B000AE074 /* Beachline.hpp */,
+				BE4D7EF0209F41ED00C701D1 /* Beachline.cpp */,
+				BE8326C02091E211007066CB /* DCEL.hpp */,
+				BE4D7EF2209F6D6B00C701D1 /* DCEL.cpp */,
 			);
 			path = Datastruct;
 			sourceTree = "<group>";
@@ -72,6 +96,7 @@
 			children = (
 				BEB3F69020879C9B00470352 /* FortuneAlgo */,
 				BEB3F68F20879C9B00470352 /* Products */,
+				BEBE74BE2090BED9007F0FAD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -86,6 +111,8 @@
 		BEB3F69020879C9B00470352 /* FortuneAlgo */ = {
 			isa = PBXGroup;
 			children = (
+				BE4D7EEC209F384500C701D1 /* Voronoi */,
+				BEBE74BC2090BDF2007F0FAD /* Visualization */,
 				BE87393A208A0097000AE074 /* Math */,
 				BE8739382089E31F000AE074 /* Datastruct */,
 				BEB3F69820879CA400470352 /* Types */,
@@ -101,6 +128,22 @@
 				BEB3F69920879D1700470352 /* Point2D.h */,
 			);
 			path = Types;
+			sourceTree = "<group>";
+		};
+		BEBE74BC2090BDF2007F0FAD /* Visualization */ = {
+			isa = PBXGroup;
+			children = (
+				BEBE74BD2090BE8C007F0FAD /* matplotlibcpp.h */,
+			);
+			path = Visualization;
+			sourceTree = "<group>";
+		};
+		BEBE74BE2090BED9007F0FAD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BEBE74BF2090BEDA007F0FAD /* Python.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -161,9 +204,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				BEB3F69B20879D1800470352 /* Point2D.cpp in Sources */,
+				BE4D7EF1209F41ED00C701D1 /* Beachline.cpp in Sources */,
 				BE873940208A14F0000AE074 /* Circle.cpp in Sources */,
+				BE4D7EF3209F6D6B00C701D1 /* DCEL.cpp in Sources */,
 				BE87393D208A00B8000AE074 /* Parabola.cpp in Sources */,
 				BEB3F69220879C9B00470352 /* main.cpp in Sources */,
+				BE4D7EEF209F386000C701D1 /* VoronoiDiagram.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,6 +324,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = RNY7CT6KJG;
+				HEADER_SEARCH_PATHS = /System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/numpy/core/include;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "./Types/ ./Datastruct/ ./Math/";
 			};
@@ -288,6 +335,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = RNY7CT6KJG;
+				HEADER_SEARCH_PATHS = /System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/numpy/core/include;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "./Types/ ./Datastruct/ ./Math/";
 			};
