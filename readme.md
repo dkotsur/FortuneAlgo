@@ -1,4 +1,4 @@
-# C++ implementation of Voronoi diagram for points.
+# C++ implementation of Voronoi diagram for points
 
 Implementation of Fortune's sweep line algorithm :
 * S. Fortune, "A sweepline algorithm for Voronoi diagrams", Algorithmica, 1986
@@ -8,7 +8,7 @@ Implementation of Fortune's sweep line algorithm :
 <br/> 
 <br/> 
 
-### Main features:
+### Main Features:
 * xCode project;
 * No dependencies on external libraries (except visualization);
 * Visualization using matplotlib for C++ (header only), however (I think) python is required!
