@@ -36,6 +36,7 @@ bool findCircleCenter(const Point2D &p1, const Point2D &p2, const Point2D &p3, P
 }
 
 /*
+ // Just testing
 int main(int argc, char *argv[]) {
     
     Point2D center;

@@ -15,9 +15,6 @@
 #include <queue>
 
 
-#define _DEBUG_
-
-
 namespace bl = beachline;
 
 
@@ -252,7 +249,7 @@ void build_voronoi(const std::vector<Point2D> &points,
             // make a new pair of halfedges
             std::pair<bl::HalfEdgePtr, bl::HalfEdgePtr> twin_nodes = bl::make_twins(prev_leaf->get_id(), next_leaf->get_id());
             new_edge_node->edge = twin_nodes.first;
-            //1/ new_edge_node->edge = twin_nodes.first;
+            // new_edge_node->edge = twin_nodes.first;
 
             // connect halfedges
             bl::connect_halfedges(h_second, h_first->twin);
@@ -290,29 +287,4 @@ void build_voronoi(const std::vector<Point2D> &points,
             faces[he->l_index] = he;
         }
     }
-    
-//    bl::print_tree(root);
-//
-//    printf("\n\n\n");
-//    bl::BLNodePtr node = root, prev_node = nullptr;
-//    while (node != nullptr) {
-//        if (node->is_leaf()) {
-//            prev_node = node;
-//            node = node->parent;
-//        } else if (prev_node == node->parent) {
-//            prev_node = node;
-//            node = node->left;
-//        } else if (prev_node == node->left) {
-//            prev_node = node;
-//            node = node->right;
-//        } else if (prev_node == node->right) {
-//            printf("Breakpoint: %d %d; Edge: %d %d\n", node->indices.first,
-//                                    node->indices.second,
-//                                    node->edge->l_index,
-//                                    node->edge->r_index);
-//
-//            prev_node = node;
-//            node = node->parent;
-//        }
-//    }
 }

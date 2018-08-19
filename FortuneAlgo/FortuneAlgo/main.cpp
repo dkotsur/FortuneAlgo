@@ -102,8 +102,7 @@ double random_number() {
 
 
 std::vector<Point2D> randomPoint(int number) {
-    
-    srand(static_cast<unsigned int>(time(0)));//time(0)));
+    srand(static_cast<unsigned int>(time(0)));
     std::vector<Point2D> points;
     for (int i = 0; i < number; ++i) {
         double x = random_number(), y = random_number();
@@ -172,138 +171,35 @@ void initEdgePointsVis(bl::HalfEdgePtr h, std::vector<double> &x, std::vector<do
 
 int main(int argc, const char *argv[]) {
     
-    std::vector<Point2D> points = randomPoint(200);// readPoints("/Users/dkotsur/Projects/KNU/VoronoiSkeleton/Data/points_1.txt", 1);
-//
-//    std::vector<Point2D> points = {
-//        Point2D(0.0, 0.0),
-//        Point2D(0.0, 1.0),
-////        Point2D(0.0, 2.0),
-////        Point2D(0.0, 3.0),
-////        Point2D(0.0, 4.0),
-//        Point2D(1.0, 1.0),
-////        Point2D(1.0, 2.0),
-////        Point2D(1.0, 3.0),
-////        Point2D(1.0, 4.1),
-//        Point2D(2.0, 1.0),
-////        Point2D(2.0, 2.0),
-////        Point2D(3.0, 3.0),
-////        Point2D(3.0, 4.1),
-////        Point2D(1.001, 3.0),
-////        Point2D(1.00001, 4.1),
-//        Point2D(2.0001, 1.0),
-//        //Point2D(2.0001, 2.0),
-//        //Point2D(3.01, 3.0),
-//        //Point2D(3.01, 4.1)
-//    };
-//
-    
-//    std::vector<Point2D> points = {
-//        Point2D(0.0, 0.0),
-//        Point2D(0.0, 1.0),
-//        Point2D(0.0, 2.0),
-//        Point2D(0.0, 3.0),
-//        Point2D(0.0, 4.0),
-//        Point2D(1.0, 1.0),
-//        Point2D(1.0, 2.0),
-//        Point2D(1.0, 3.0),
-//        Point2D(1.0, 4.1),
-//        Point2D(2.0, 1.0),
-//        Point2D(2.0, 2.0),
-//        Point2D(3.0, 3.0),
-//        Point2D(3.0, 4.1),
-//        Point2D(1.001, 3.0),
-//        Point2D(1.00001, 4.1),
-//        Point2D(2.0001, 1.0),
-//        Point2D(2.0001, 2.0),
-//        Point2D(3.01, 3.0),
-//        Point2D(3.01, 4.1)
-//    };
-    ////
-    ////
-//points.erase(points.begin()+5, points.end());
-
-    
-//    std::vector<Point2D> points = {
-//        Point2D(0.0, 0.0),
-//        Point2D(0.25, 0.0),
-//        Point2D(0.5, 1.0),
-//        Point2D(0.75, 0.0),
-//        Point2D(1.0, 0.0)
-//    };
-
-//    std::vector<Point2D> points = {
-//        Point2D(5, 2),
-//        Point2D(3, 3),
-//        Point2D(7, 3),
-//        Point2D(3, 5)
-//    };
-
-//    std::vector<Point2D> points = {
-//        Point2D(46.9219,21.0012),
-//        Point2D(58.0412,25.9238),
-//        Point2D(40.1528,25.9658)
-//      //  Point2D(64.9267,27.0127)
-////        Point2D(30.5983,33.1335),
-////        Point2D(46.9215,41)
-//    };
-
-//    std::vector<Point2D> points = {
-//        Point2D(0.0, 0.0),
-//        Point2D(8.0, 0.0),
-//        Point2D(2.0, 0.0),
-//        Point2D(5.0, 0.0),
-//        Point2D(9.0, 0.0),
-//        Point2D(4.0, 4.0),
-//        Point2D(1.0, 4.0),
-//        Point2D(3.0, 5.0),
-//        Point2D(2.0, 3.0),
-//        Point2D(2.0, 7.0),
-//        Point2D(5.0, 2.0),
-//        Point2D(1.0, 1.0),
-//        Point2D(5.0, 5.0),
-//        Point2D(0.0, 3.0),
-//        Point2D(0.5, 1.0),
-//        Point2D(0.001, -0.5),
-//        Point2D(M_PI, M_PI),
-//        Point2D(2.0, 1.0),
-//        Point2D(-1.0, 2.0)
-//    };
-    
-//    std::vector<Point2D> points = {
-//        Point2D(0.0, 0.0),
-//        Point2D(-2.0, 2.0),
-//        Point2D(2.0, 2.0),
-//        Point2D(0.0, 4.0001)
-//    };
-
-    std::cout << points.size() << std::endl;
+    // Generate random points
+    std::vector<Point2D> points = randomPoint(50);
     
     std::vector<bl::HalfEdgePtr> halfedges, faces;
     std::vector<bl::VertexPtr> vertices;
-
+    
     for(size_t i = 0; i < points.size(); ++i) {
         std::vector<double> _x, _y;
         _x.push_back(points[i].x); _y.push_back(points[i].y);
         plt::named_plot(std::to_string(i), _x, _y, ".");
     }
-
+    
     // Construct Voronoi diagram
     build_voronoi(points, halfedges, vertices, faces);
     
     for (size_t i = 0; i < halfedges.size(); ++i) {
         bl::HalfEdgePtr h = halfedges[i];
-
+        
         std::vector<double> x(2, 0.0), y(2, 0.0);
         initEdgePointsVis(h, x, y, points);
-
+        
         plt::plot(x, y, "lightgray");
     }
     
+    // Check if iterator works fine
     for (size_t i = 0; i < halfedges.size(); ++i) {
         bl::HalfEdgePtr h = halfedges[i];
         do {
             assert(halfedges[i]->l_index == h->l_index);
-            //printf("   Halfedge: %d %d\n", h->l_index, h->r_index);
             h = h->next;
         } while (h != nullptr && h != halfedges[i]);
     }
@@ -311,42 +207,35 @@ int main(int argc, const char *argv[]) {
     /**
      Iterate around the vertex CCW
      */
-//    bl::HalfEdgePtr he_end = halfedges[6], he = he_end;
-//    if (he->vertex != nullptr) {
-//        do {
-//            std::vector<double> x(2, 0.0), y(2, 0.0);
-//            initEdgePointsVis(he, x, y, points);
-//
-//            plt::plot(x, y, "m-");
-//            //printf("..Iter: %d %d\n", he->l_index, he->r_index);
-//
-//            he = he->vertexNextCCW();
-//        } while (he != he_end && he != nullptr);
-//    }
-//    printf("\n\n");
+    bl::HalfEdgePtr he_end = halfedges[6], he = he_end;
+    if (he->vertex != nullptr) {
+        do {
+            std::vector<double> x(2, 0.0), y(2, 0.0);
+            initEdgePointsVis(he, x, y, points);
+            plt::plot(x, y, "m-");
+            he = he->vertexNextCCW();
+        } while (he != he_end && he != nullptr);
+    }
+    printf("\n\n");
     
     /**
      Iterate around the point CCW
      */
-//    he_end = faces[1]; he = he_end;
-//    if (he != nullptr) {
-//        do {
-//            std::vector<double> x(2, 0.0), y(2, 0.0);
-//            initEdgePointsVis(he, x, y, points);
-//
-//            plt::plot(x, y, "c--");
-//            //printf("..Iter: %d %d\n", he->l_index, he->r_index);
-//
-//            he = he->next;
-//        } while (he != nullptr && he != he_end);
-//    }
+    he_end = faces[1]; he = he_end;
+    if (he != nullptr) {
+        do {
+            std::vector<double> x(2, 0.0), y(2, 0.0);
+            initEdgePointsVis(he, x, y, points);
+            plt::plot(x, y, "c--");
+            he = he->next;
+        } while (he != nullptr && he != he_end);
+    }
     
     plt::axis("equal");
     plt::xlim(-0.5, 1.5);
     plt::ylim(-0.5, 1.5);
-    //plt::legend();
     plt::show();
-
+    
     return 0;
 }
 
