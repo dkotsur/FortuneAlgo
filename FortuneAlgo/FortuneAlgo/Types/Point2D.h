@@ -14,7 +14,7 @@
 #include <limits>
 #include <cmath>
 
-#define POINT_EPSILON 1.0e-7
+#define POINT_EPSILON 1.0e-6
 
 class Point2D {
 

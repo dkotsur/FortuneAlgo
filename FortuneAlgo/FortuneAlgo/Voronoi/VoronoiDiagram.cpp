@@ -52,14 +52,14 @@ typedef std::shared_ptr<Event> EventPtr;
 
 struct Point2DComparator {
     bool operator()(const Point2D &p1, const Point2D &p2) {
-        return (fabs(p1.y - p2.y) < POINT_EPSILON && p1.x > p2.x) || (fabs(p1.y - p2.y) > POINT_EPSILON && p1.y > p2.y);
+        return (p1.y == p2.y && p1.x > p2.x) || p1.y > p2.y;
     }
 };
 
 
 struct Point2DComparator2 {
     bool operator()(const Point2D &p1, const Point2D &p2) {
-        return (fabs(p1.y - p2.y) < POINT_EPSILON && p1.x < p2.x) || (fabs(p1.y - p2.y) > POINT_EPSILON && p1.y < p2.y);
+        return (p1.y == p2.y && p1.x < p2.x) || p1.y < p2.y;
     }
 };
 
@@ -106,10 +106,6 @@ EventPtr checkCircleEvent(bl::BLNodePtr n1, bl::BLNodePtr n2, bl::BLNodePtr n3,
     
     return nullptr;
 }
-
-
-
-
 
 
 void build_voronoi(const std::vector<Point2D> &points,
@@ -205,7 +201,9 @@ void build_voronoi(const std::vector<Point2D> &points,
             }
             
             // recheck if it's a false alarm 2
-            if (fabs(breakpoints.first->value() - breakpoints.second->value()) > POINT_EPSILON) {
+            double v1 = breakpoints.first->value(), v2 = breakpoints.second->value();
+            
+            if (fabs(v1 - v2) > POINT_EPSILON) {
                 continue;
             }
             
