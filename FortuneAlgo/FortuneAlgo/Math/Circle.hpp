@@ -12,6 +12,7 @@
 
 #include "Point2D.h"
 
+#define CIRCLE_CENTER_EPSILON 1.0e-7
 
 /**
  

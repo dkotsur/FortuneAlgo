@@ -13,14 +13,14 @@
 
 
 namespace DCEL {
-    
+
     class Vertex;
     class HalfEdge;
     
     typedef std::shared_ptr<HalfEdge> HalfEdgePtr;
     typedef std::shared_ptr<Vertex> VertexPtr;
-    
-    
+
+
     class Vertex {
     public:
         
@@ -31,9 +31,9 @@ namespace DCEL {
         
         inline double x() { return point.x; }
         inline double y() { return point.y; }
-        
+
     };
-    
+
     
     class HalfEdge {
     public:
@@ -57,7 +57,7 @@ namespace DCEL {
         HalfEdgePtr vertexNextCCW();
         HalfEdgePtr vertexNextCW();
     };
-    
+
     
     std::pair<HalfEdgePtr, HalfEdgePtr> make_twins(int left_index, int right_index);
     
@@ -71,4 +71,3 @@ namespace DCEL {
 
 
 #endif /* DCEL_h */
-

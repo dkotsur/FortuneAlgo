@@ -21,4 +21,7 @@ void build_voronoi(const std::vector<Point2D> &points,
                    std::vector<bl::VertexPtr> &vertices,
                    std::vector<bl::HalfEdgePtr> &faces);
 
+//std::vector<bl::HalfEdgePtr> init
+//
+
 #endif /* VoronoiDiagram_hpp */

@@ -18,7 +18,7 @@ bool findCircleCenter(const Point2D &p1, const Point2D &p2, const Point2D &p3, P
     double cross = crossProduct(u1, u2);
     
     // check if vectors are collinear
-    if (fabs(cross) < POINT_EPSILON) {
+    if (fabs(cross) < CIRCLE_CENTER_EPSILON) {
         return false;
     }
     
@@ -36,7 +36,6 @@ bool findCircleCenter(const Point2D &p1, const Point2D &p2, const Point2D &p3, P
 }
 
 /*
- // Just testing
 int main(int argc, char *argv[]) {
     
     Point2D center;

@@ -172,7 +172,8 @@ void initEdgePointsVis(bl::HalfEdgePtr h, std::vector<double> &x, std::vector<do
 int main(int argc, const char *argv[]) {
     
     // Generate random points
-    std::vector<Point2D> points = randomPoint(50);
+    //std::vector<Point2D> points = randomPoint(50);
+    std::vector<Point2D> points = readPoints("/Users/dkotsur/Projects/FortuneAlgo/Data/fail_1.txt");
     
     std::vector<bl::HalfEdgePtr> halfedges, faces;
     std::vector<bl::VertexPtr> vertices;
@@ -232,8 +233,8 @@ int main(int argc, const char *argv[]) {
     }
     
     plt::axis("equal");
-    plt::xlim(-0.5, 1.5);
-    plt::ylim(-0.5, 1.5);
+    //plt::xlim(-0.5, 1.5);
+    //plt::ylim(-0.5, 1.5);
     plt::show();
     
     return 0;

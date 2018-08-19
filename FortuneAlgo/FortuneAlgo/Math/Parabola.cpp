@@ -35,7 +35,7 @@ std::vector<Point2D> findIntersectionPoints(const Point2D &f1, const Point2D &f2
         double y = 0.5 * (f1.y + f2.y), D = sqrt(d * d - d * (f1.y + f2.y) + f1.y * f2.y);
         result.push_back(Point2D(f1.x - D, y));
         result.push_back(Point2D(f1.x + D, y));
-    } else if (fabs(f1.y - f2.y) < POINT_EPSILON) {
+    } else if (fabs(f1.y - f2.y) < POINT_EPSILON) { 
         double x = 0.5 * (f1.x + f2.x);
         result.push_back(Point2D(x, 0.5 * ((x - f1.x) * (x - f1.x) + f1.y * f1.y  - d * d) / (f1.y - d)));
     } else {

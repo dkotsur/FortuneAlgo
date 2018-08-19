@@ -11,10 +11,6 @@
 
 #include "Point2D.h"
 
-#ifndef POINT_EPSILON
-    #define POINT_EPSILON 1.0e-10
-#endif
-
 
 /**
  
