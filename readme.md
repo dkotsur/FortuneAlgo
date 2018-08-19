@@ -3,9 +3,8 @@
 Implementation of Fortune's sweep line algorithm :
 * S. Fortune, "A sweepline algorithm for Voronoi diagrams", Algorithmica, 1986
 
-![Image of Voronoi diagram](./Images/voronoi-1.png)
+![Image of Voronoi diagram](./Images/voronoi-1.png) <br/><br/>
 
-<\br>
 Main features:
 * xCode project;
 * No dependencies on external libraries (except visualization);
