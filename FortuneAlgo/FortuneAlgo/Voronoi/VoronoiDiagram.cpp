@@ -231,10 +231,6 @@ void build_voronoi(const std::vector<Point2D> &points,
             prev_leaf = arc->prev;
             next_leaf = arc->next;
             
-            if (prev_leaf == nullptr || next_leaf == nullptr) {
-                int a = 100; a++;
-            }
-            
             // They should not be null
             assert(prev_leaf != nullptr);
             assert(next_leaf != nullptr);
@@ -265,6 +261,7 @@ void build_voronoi(const std::vector<Point2D> &points,
             h_first->vertex = vertex;
             h_second->vertex = vertex;
             twin_nodes.second->vertex = vertex;
+            vertex->edge = h_first;
             
             halfedges.push_back(twin_nodes.first);
             halfedges.push_back(twin_nodes.second);
@@ -291,28 +288,4 @@ void build_voronoi(const std::vector<Point2D> &points,
         }
     }
     
-//    bl::print_tree(root);
-//
-//    printf("\n\n\n");
-//    bl::BLNodePtr node = root, prev_node = nullptr;
-//    while (node != nullptr) {
-//        if (node->is_leaf()) {
-//            prev_node = node;
-//            node = node->parent;
-//        } else if (prev_node == node->parent) {
-//            prev_node = node;
-//            node = node->left;
-//        } else if (prev_node == node->left) {
-//            prev_node = node;
-//            node = node->right;
-//        } else if (prev_node == node->right) {
-//            printf("Breakpoint: %d %d; Edge: %d %d\n", node->indices.first,
-//                                    node->indices.second,
-//                                    node->edge->l_index,
-//                                    node->edge->r_index);
-//
-//            prev_node = node;
-//            node = node->parent;
-//        }
-//    }
 }
