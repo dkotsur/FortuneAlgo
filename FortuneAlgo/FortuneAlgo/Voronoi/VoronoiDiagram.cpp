@@ -261,7 +261,7 @@ void build_voronoi(const std::vector<Point2D> &points,
             h_first->vertex = vertex;
             h_second->vertex = vertex;
             twin_nodes.second->vertex = vertex;
-            vertex->edge = h_first;
+            vertex->edge = h_second;
             
             halfedges.push_back(twin_nodes.first);
             halfedges.push_back(twin_nodes.second);
