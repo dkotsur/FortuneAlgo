@@ -172,8 +172,8 @@ void initEdgePointsVis(bl::HalfEdgePtr h, std::vector<double> &x, std::vector<do
 int main(int argc, const char *argv[]) {
     
     // Generate random points
-    //std::vector<Point2D> points = randomPoint(50);
-    std::vector<Point2D> points = readPoints("/Users/dkotsur/Projects/FortuneAlgo/Data/fail_1.txt");
+    std::vector<Point2D> points = randomPoint(100);
+    //std::vector<Point2D> points = readPoints("/Users/dkotsur/Projects/KNU/FortuneAlgo/Data/fail_1.txt");
     
     std::vector<bl::HalfEdgePtr> halfedges, faces;
     std::vector<bl::VertexPtr> vertices;
@@ -208,29 +208,29 @@ int main(int argc, const char *argv[]) {
     /**
      Iterate around the vertex CCW
      */
-    bl::HalfEdgePtr he_end = halfedges[6], he = he_end;
-    if (he->vertex != nullptr) {
-        do {
-            std::vector<double> x(2, 0.0), y(2, 0.0);
-            initEdgePointsVis(he, x, y, points);
-            plt::plot(x, y, "m-");
-            he = he->vertexNextCCW();
-        } while (he != he_end && he != nullptr);
-    }
-    printf("\n\n");
+//    bl::HalfEdgePtr he_end = halfedges[6], he = he_end;
+//    if (he->vertex != nullptr) {
+//        do {
+//            std::vector<double> x(2, 0.0), y(2, 0.0);
+//            initEdgePointsVis(he, x, y, points);
+//            plt::plot(x, y, "m-");
+//            he = he->vertexNextCCW();
+//        } while (he != he_end && he != nullptr);
+//    }
+//    printf("\n\n");
     
     /**
      Iterate around the point CCW
      */
-    he_end = faces[1]; he = he_end;
-    if (he != nullptr) {
-        do {
-            std::vector<double> x(2, 0.0), y(2, 0.0);
-            initEdgePointsVis(he, x, y, points);
-            plt::plot(x, y, "c--");
-            he = he->next;
-        } while (he != nullptr && he != he_end);
-    }
+//    he_end = faces[1]; he = he_end;
+//    if (he != nullptr) {
+//        do {
+//            std::vector<double> x(2, 0.0), y(2, 0.0);
+//            initEdgePointsVis(he, x, y, points);
+//            plt::plot(x, y, "c--");
+//            he = he->next;
+//        } while (he != nullptr && he != he_end);
+//    }
     
     plt::axis("equal");
     //plt::xlim(-0.5, 1.5);

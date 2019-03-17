@@ -93,8 +93,11 @@ namespace beachline {
      */
     BLNodePtr rotate_left(BLNodePtr node) {
         
-        if (node == nullptr || node->right == nullptr)
+        if (node == nullptr)
             return nullptr;
+        
+        if (node->right == nullptr)
+            return node;
         
         // get right node, which becomes a new root node
         BLNodePtr rnode = node->right;
@@ -133,8 +136,11 @@ namespace beachline {
      */
     BLNodePtr rotate_right(BLNodePtr node) {
         
-        if (node == nullptr || node->left == nullptr)
+        if (node == nullptr)
             return nullptr;
+        
+        if (node->left == nullptr)
+            return node;
         
         // left node becomes root node of subtree
         BLNodePtr lnode = node->left;
