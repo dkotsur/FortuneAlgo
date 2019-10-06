@@ -109,7 +109,7 @@ std::vector<Point2D> randomPoint(int number) {
         points.push_back(Point2D(x, y));
     }
     std::sort(points.begin(), points.end(), [](const Point2D &p1, const Point2D &p2) {
-        return (fabs(p1.y - p2.y) < POINT_EPSILON && p1.x < p2.x) || (fabs(p1.y - p2.y) >= POINT_EPSILON && p1.y < p1.y);
+        return (fabs(p1.y - p2.y) < POINT_EPSILON && p1.x < p2.x) || (fabs(p1.y - p2.y) >= POINT_EPSILON && p1.y < p2.y);
     });
     for (int i = 1; i < number; ++i) {
         if ((points[i-1] - points[i]).norm() < POINT_EPSILON) {
